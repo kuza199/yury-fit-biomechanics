@@ -1,0 +1,1000 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Биомеханика Юрий Фит</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap">
+<style>
+/* Раскладка: на телефоне модель закреплена сверху, ползунки и разборы прокручиваются под ней; на широком экране две колонки. */
+:root{
+  --bg:#0c0b0a; --card:#161412; --card2:#1f1c19; --line:#2d2925;
+  --fg:#f4efe8; --mut:#a69e94; --dim:#6f685f;
+  --acc:#ff7a1a; --acc2:#ffb23f; --hot:#ff3d2e; --ok:#46d37f;
+  --head:'Oswald','Arial Narrow','Roboto Condensed',Impact,sans-serif;
+  --body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:radial-gradient(900px 480px at 85% -8%,rgba(255,122,26,.16),transparent 62%),var(--bg);
+  color:var(--fg);font:400 14px/1.45 var(--body);
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:60}
+.app{max-width:1080px;margin:0 auto;padding-block:14px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font-family:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc2);outline-offset:2px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;border:2px solid var(--acc);font:700 15px var(--head);color:var(--acc2);letter-spacing:.04em}
+.brand b{display:block;font:600 17px/1 var(--head);letter-spacing:.08em;text-transform:uppercase}
+.brand small{color:var(--mut);font-size:12px}
+.tag{font:500 11px var(--head);letter-spacing:.22em;color:var(--mut);text-transform:uppercase}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font:500 13px var(--body);color:var(--mut);cursor:pointer;white-space:nowrap}
+.chip[aria-pressed=true],.chip.on{background:rgba(255,122,26,.16);border-color:var(--acc);color:var(--fg)}
+.chip:disabled{opacity:.45;cursor:default}
+.exlist{margin-top:14px}
+.hero{margin:10px 0 4px;font:700 clamp(28px,8.5vw,52px)/1 var(--head);text-transform:uppercase;letter-spacing:.01em}
+.hero span{display:block}
+.hero em{display:block;font-style:normal;color:var(--acc);background:linear-gradient(180deg,var(--acc2),#ff6200);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.lead{margin:0 0 14px;color:var(--mut);max-width:46ch}
+.layout{display:block}
+.stage{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--bg);padding:6px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.figure{padding:8px 8px 10px;overflow:hidden;background:linear-gradient(180deg,#1a1714,#121110)}
+#fig{display:block;width:100%;height:auto;touch-action:pan-y}
+.legend{display:flex;align-items:center;gap:8px;margin:2px 4px 0;font-size:11px;color:var(--mut)}
+.legend i{flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,#545c68,#dea834 35%,#ff701a 70%,#ff3028)}
+.pills{display:flex;gap:6px;margin-top:6px}
+.pill{flex:1;min-width:0;background:var(--card2);border-radius:10px;padding:6px 8px 7px;position:relative;overflow:hidden}
+.pill small{display:block;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill b{font:600 18px/1.1 var(--head);font-variant-numeric:tabular-nums}
+.pill i{position:absolute;left:0;bottom:0;height:3px;background:var(--acc);transition:width .15s}
+.hipctl{margin-top:8px;padding:10px 12px 8px}
+.rowhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.rowhead label,.rowhead .lbl{font:600 13px var(--body)}
+.rowhead output{font:600 15px var(--head);color:var(--acc2);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:-2px}
+.rwrap{position:relative}
+.zone{position:absolute;top:10px;height:8px;border-radius:0 8px 8px 0;background:rgba(255,61,46,.4);pointer-events:none;left:calc(var(--on,.8)*(100% - 26px) + 13px);right:0}
+.tick{position:absolute;top:5px;width:2px;height:18px;background:var(--fg);opacity:.55;pointer-events:none;left:calc(.8*(100% - 26px) + 12px)}
+input[type=range]{-webkit-appearance:none;appearance:none;display:block;width:100%;height:28px;margin:0;background:transparent;cursor:pointer;touch-action:pan-y;--f:.5}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:8px;background:linear-gradient(90deg,var(--acc) 0,var(--acc2) calc(var(--f)*(100% - 26px) + 13px),#2b2723 calc(var(--f)*(100% - 26px) + 13px))}
+input[type=range]::-moz-range-track{height:8px;border-radius:8px;background:#2b2723}
+input[type=range]::-moz-range-progress{height:8px;border-radius:8px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-9px;border-radius:50%;background:#fff;border:4px solid var(--acc);box-shadow:0 2px 8px rgba(0,0,0,.5)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:4px solid var(--acc)}
+.panel{margin-top:12px}
+.panel h2{margin:0 0 10px;font:600 17px/1.1 var(--head);letter-spacing:.06em;text-transform:uppercase}
+.panel h2 small{display:block;margin-top:4px;font:400 12px/1.35 var(--body);letter-spacing:0;text-transform:none;color:var(--mut)}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tools .btn{flex:1 1 auto}
+.btn{min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--card2);font:600 14px var(--body);cursor:pointer}
+.btn.pri{background:linear-gradient(180deg,#ff8a2b,#f26a00);border-color:transparent;color:#160a02}
+.btn:active{transform:translateY(1px)}
+.lbl2{margin:12px 0 6px;font:500 11px var(--head);letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.grp+.grp{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.grp h3{margin:0 0 6px;font:500 12px var(--head);letter-spacing:.2em;text-transform:uppercase;color:var(--acc2)}
+.ctl{margin-top:8px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.seg button{min-height:44px;padding:4px 6px;border-radius:10px;border:1px solid var(--line);background:var(--card2);font:500 12.5px/1.2 var(--body);color:var(--mut);cursor:pointer}
+.seg button[aria-checked=true]{border-color:var(--acc);background:rgba(255,122,26,.16);color:var(--fg)}
+.checks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ck{padding:5px 10px;border-radius:999px;font:500 12px var(--body);border:1px solid var(--line);color:var(--mut)}
+.ck.y{border-color:rgba(70,211,127,.5);color:var(--ok);background:rgba(70,211,127,.08)}
+.ck.n{border-color:rgba(255,61,46,.55);color:#ff8a7f;background:rgba(255,61,46,.1)}
+.lead2{margin:0 0 12px;font-size:13px;color:var(--fg)}
+.iss{padding:10px 0;border-top:1px solid var(--line)}
+.iss:first-child{border-top:0;padding-top:0}
+.iss .t{display:inline-block;padding:2px 8px;border-radius:999px;font:600 10px var(--body);letter-spacing:.1em;text-transform:uppercase;margin-right:8px;vertical-align:1px}
+.iss.err .t{background:rgba(255,61,46,.18);color:#ff8a7f}
+.iss.warn .t{background:rgba(255,178,63,.18);color:var(--acc2)}
+.iss.tip .t{background:rgba(255,255,255,.1);color:var(--fg)}
+.iss.ok .t{background:rgba(70,211,127,.18);color:var(--ok)}
+.iss b{font:600 15px var(--body)}
+.iss p{margin:4px 0 0;color:var(--mut)}
+.iss p.fix{color:var(--fg)}
+.bar{margin-top:10px}
+.bar .h{display:flex;justify-content:space-between;gap:8px}
+.bar .n{font-size:13px}
+.bar .v{font:600 15px var(--head);font-variant-numeric:tabular-nums}
+.bar .tr{position:relative;height:9px;margin-top:4px;border-radius:9px;background:#2a2622;overflow:hidden}
+.bar .tr i{position:absolute;left:0;top:0;bottom:0;border-radius:9px;transition:width .15s,background .15s}
+.mgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.met{background:var(--card2);border-radius:12px;padding:10px 12px}
+.met small{display:block;font-size:11px;color:var(--mut);letter-spacing:.04em}
+.met b{display:block;font:600 24px/1.15 var(--head);font-variant-numeric:tabular-nums}
+.met b.hot{color:#ff8a7f}
+.met span{display:block;font-size:11px;color:var(--dim);line-height:1.3}
+.svgbox{overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto}
+.note{margin:8px 0 0;font-size:12.5px;color:var(--mut)}
+footer{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);color:var(--mut);font-size:12px}
+footer .big{font:600 15px var(--head);letter-spacing:.12em;text-transform:uppercase;color:var(--fg)}
+footer .big em{font-style:normal;color:var(--acc)}
+footer p{margin:6px 0 0;max-width:62ch}
+.sheet{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.66);display:flex;align-items:flex-end;justify-content:center}
+.sheet .box{width:100%;max-width:600px;max-height:90vh;overflow-y:auto;background:#171512;border:1px solid var(--line);border-radius:20px 20px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet[hidden]{display:none}
+.sheet h2{margin:0;font:700 26px/1 var(--head);text-transform:uppercase}
+.sheet h2 em{font-style:normal;color:var(--acc)}
+.steps{counter-reset:s;list-style:none;margin:14px 0;padding:0;display:grid;gap:10px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:10px}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--acc);color:#160a02;font:700 14px var(--head)}
+.steps b{display:block}
+.steps span{color:var(--mut)}
+.sheet h3{margin:16px 0 6px;font:500 12px var(--head);letter-spacing:.2em;text-transform:uppercase;color:var(--acc2)}
+.sheet ul{margin:0;padding-left:18px;color:var(--mut)}
+.sheet .row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+@media (min-width:920px){
+  .layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:22px;align-items:start}
+  .stage{top:calc(env(safe-area-inset-top,0px) + 8px)}
+  .panel:first-child{margin-top:6px}
+  .mgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .sheet{align-items:center}
+  .sheet .box{border-radius:20px}
+}
+@media (prefers-reduced-motion:reduce){.pill i,.bar .tr i{transition:none}}
+
+.mu{mix-blend-mode:screen}
+svg text{font-family:var(--body)}
+.tg{fill:#46d37f;font:600 12px var(--body)}
+.tg2{fill:var(--acc2);font:600 12px var(--body)}
+.tj{fill:var(--fg);font:500 11px var(--body)}
+.tr{fill:#ff8a7f;font:700 12px var(--body)}
+.ta{fill:var(--mut);font:400 11px var(--body)}
+.chip{font-family:var(--body)}
+</style>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">YF</div>
+      <div><b>Юрий Фит</b><small>@yury.fit · персональный тренер</small></div>
+    </div>
+    <div class="tag">Биомеханика движения</div>
+  </header>
+
+  <nav class="chips exlist" aria-label="Упражнения">
+    <button class="chip on" aria-pressed="true" type="button">Ягодичный мост</button>
+    <button class="chip" type="button" disabled>Присед · скоро</button>
+    <button class="chip" type="button" disabled>Румынская тяга · скоро</button>
+    <button class="chip" type="button" disabled>Выпад · скоро</button>
+  </nav>
+
+  <h1 class="hero"><span>Ягодичный <em style="display:inline">мост</em></span></h1>
+  <p class="lead">Двигайте ползунки и смотрите, как меняются работа мышц, нагрузка на поясницу и колени.</p>
+
+  <div class="tools" style="margin-bottom:12px">
+    <button class="btn pri" id="howBtn" type="button">Как правильно делать</button>
+    <button class="btn" id="playBtn" type="button">Показать повтор</button>
+  </div>
+
+  <div class="layout">
+    <section class="stage" aria-label="Модель">
+      <div class="card figure">
+        <svg id="fig" viewBox="0 0 880 400" role="img" aria-label="Фигура девушки в ягодичном мосте, вид сбоку"></svg>
+        <div class="legend" aria-hidden="true"><span>покой</span><i></i><span>максимум</span></div>
+        <div class="pills">
+          <div class="pill"><small>Тазобедренный</small><b id="pHip">—</b><i id="pHipB"></i></div>
+          <div class="pill"><small>Колено</small><b id="pKnee">—</b><i id="pKneeB"></i></div>
+          <div class="pill"><small>Прогиб поясницы</small><b id="pLum">—</b><i id="pLumB" style="background:var(--hot)"></i></div>
+        </div>
+      </div>
+      <div class="card hipctl">
+        <div class="rowhead"><label for="s">Подъём таза</label><output id="sOut" for="s">100</output></div>
+        <div class="rwrap">
+          <div class="zone" id="zone"></div><div class="tick"></div>
+          <input id="s" type="range" min="0" max="125" step="1" value="100" aria-describedby="sHint">
+        </div>
+        <div class="scale" id="sHint"><span>таз на полу</span><span>линия плечи–таз–колени</span><span>прогиб</span></div>
+      </div>
+    </section>
+
+    <div class="side">
+      <section class="panel card">
+        <h2>Что будет, если…<small>Нажмите, и модель покажет результат.</small></h2>
+        <div class="chips" id="presets" style="flex-wrap:wrap;overflow:visible"></div>
+        <div class="tools" style="margin-top:8px">
+          <button class="chip" id="gh" type="button" aria-pressed="false">Показать эталон</button>
+          <button class="chip" id="lyA" type="button" aria-pressed="true">Анатомия</button>
+          <button class="chip" id="lyF" type="button" aria-pressed="true">Силы</button>
+        </div>
+      </section>
+
+      <section class="panel card">
+        <h2>Положение<small>Меняйте как у клиента: стопы, колени, руки.</small></h2>
+        <div class="grp">
+          <h3>Скамья</h3>
+          <div class="ctl" style="margin-top:0"><div class="rowhead"><label for="bench">Высота скамьи</label><output id="benchOut" for="bench"></output></div><input id="bench" type="range" min="30" max="46" step="1"></div>
+        </div>
+        <div class="grp">
+          <h3>Стопы</h3>
+          <div class="lbl2" style="margin-top:0">Опора</div>
+          <div class="seg" id="segSup" role="radiogroup" aria-label="Опора стопы"></div>
+          <div class="ctl"><div class="rowhead"><label for="d">Пятки от ягодиц</label><output id="dOut" for="d"></output></div><input id="d" type="range" min="20" max="50" step="1"></div>
+          <div class="ctl"><div class="rowhead"><label for="w">Ширина стоп</label><output id="wOut" for="w"></output></div><input id="w" type="range" min="10" max="60" step="1"></div>
+          <div class="ctl"><div class="rowhead"><label for="phi">Разворот носков</label><output id="phiOut" for="phi"></output></div><input id="phi" type="range" min="0" max="45" step="1"></div>
+        </div>
+        <div class="grp">
+          <h3>Колени и руки</h3>
+          <div class="ctl"><div class="rowhead"><label for="k">Колени</label><output id="kOut" for="k"></output></div><input id="k" type="range" min="-1" max="1" step="0.05"></div>
+          <div class="lbl2">Руки</div>
+          <div class="seg" id="segArm" role="radiogroup" aria-label="Положение рук"></div>
+          <div class="ctl"><div class="rowhead"><label for="load">Вес на тазу</label><output id="loadOut" for="load"></output></div><input id="load" type="range" min="0" max="60" step="5"></div>
+        </div>
+        <div class="tools" style="margin-top:14px"><button class="btn" id="resetBtn" type="button">Сбросить</button></div>
+      </section>
+
+      <section class="panel card" aria-live="polite">
+        <h2>Разбор положения<small>Ошибки и советы появляются сами.</small></h2>
+        <div class="checks" id="checks"></div>
+        <p class="lead2" id="lead2"></p>
+        <div id="issues"></div>
+      </section>
+
+      <section class="panel card">
+        <h2>Какие мышцы работают<small>100% — предел для обычного человека в этом движении.</small></h2>
+        <div id="bars"></div>
+      </section>
+
+      <section class="panel card">
+        <h2>Нагрузка<small>Расчёт для одной ноги, девушка 60 кг, 165 см.</small></h2>
+        <div class="mgrid" id="mets"></div>
+        <div class="lbl2">Когда включается поясница</div>
+        <div class="svgbox"><svg id="chart" viewBox="0 0 340 170" role="img" aria-label="График работы мышц по высоте подъёма таза"></svg></div>
+        <p class="note">Красная зона: таз поднимается за счёт прогиба поясницы. Разгибатели спины растут, ягодицы теряют работу.</p>
+      </section>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="big">Юрий <em>Фит</em> · @yury.fit</div>
+    <p>Персональный тренер, г. Прохладный. Тренировки, питание, программы. Онлайн и офлайн, запись в Direct.</p>
+    <p>Учебная модель: значения оценочные и показывают тенденции. При боли в спине или коленях обсудите упражнение с тренером или врачом.</p>
+  </footer>
+</div>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="shT">
+  <div class="box">
+    <h2 id="shT">Как делать <em>ягодичный мост</em></h2>
+    <ol class="steps">
+      <li><div><b>Исходное положение</b><span>Лопатки лежат на краю скамьи (высота 35–45 см), колени согнуты. Стопы на ширине таза. Руки вдоль тела, ладони вниз.</span></div></li>
+      <li><div><b>Подготовка</b><span>Подбородок слегка прижат к груди. Выдохните, опустите рёбра и слегка подкрутите таз: поясница не прогибается.</span></div></li>
+      <li><div><b>Подъём</b><span>Давите всей стопой, особенно пятками, и поднимайте таз, сжимая ягодицы. Колени смотрят туда же, куда носки.</span></div></li>
+      <li><div><b>Верхняя точка</b><span>Плечи, таз и колени на одной линии. Голени почти вертикально. Пауза 1–2 секунды, ягодицы сжаты.</span></div></li>
+      <li><div><b>Спуск</b><span>Медленно, за 2–3 секунды, опустите таз почти до пола и повторите.</span></div></li>
+    </ol>
+    <h3>Частые ошибки</h3>
+    <ul>
+      <li>Таз выше линии, поясница прогнута: нагрузка уходит на позвоночник.</li>
+      <li>Стопы слишком далеко: работает в основном бицепс бедра.</li>
+      <li>Стопы слишком близко: нагрузка уходит на колени и квадрицепс.</li>
+      <li>Колени заваливаются внутрь или разъезжаются.</li>
+      <li>Пятки отрываются от пола.</li>
+    </ul>
+    <div class="row">
+      <button class="btn pri" id="showRight" type="button">Показать на модели</button>
+      <button class="btn" id="closeSheet" type="button">Закрыть</button>
+    </div>
+  </div>
+</div>
+<script>/* Модель ягодичного моста: кинематика (вид сбоку, см, ось Y вверх) + статика + учебная оценка нагрузки */
+(function (root) {
+  'use strict';
+  const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const smooth = t => t * t * (3 - 2 * t);
+  const rot = (x, y, a) => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)];
+
+  // Размеры условной девушки ~165 см, 60 кг
+  const B = {
+    T: 40, S: 38,                 // бедро, голень (центр сустава до центра сустава)
+    th: 28, lum: 18,              // грудной отдел, поясница+таз (плечо → ТБС = 46)
+    sh: { x: 0 },                 // плечевой сустав над краем скамьи (y = высота скамьи + 9.5)
+    hy0: 11, benchOff: 9.5,                      // высота ТБС, когда таз лежит на полу
+    BW: 60,
+    foot: { back: 5, up: 7.5, len: 23, ball: 16 }
+  };
+  const HX0 = Math.sqrt(46 * 46 - 0.25);
+  const S_MAX = 125;              // 100 = линия плечи–таз–колени, дальше таз «добирают» поясницей
+
+  const DEFAULTS = { bench: 38, s: 100, d: 34, w: 30, phi: 10, k: 0, support: 'flat', arms: 'along', load: 0 };
+
+  function foot(st) {
+    const xh = HX0 + st.d, f = B.foot;
+    if (st.support === 'heel') {            // носки подняты, опора на пятку
+      const a = 24 * D2R, an = rot(f.back, f.up, a), bl = rot(f.ball, 0, a), tt = rot(f.len, 0, a);
+      return { heel: [xh, 0], ankle: [xh + an[0], an[1]], ball: [xh + bl[0], bl[1]], toe: [xh + tt[0], tt[1]], cop: xh + 2 };
+    }
+    if (st.support === 'toe') {             // пятки подняты, опора на передний отдел
+      const a = -42 * D2R, bx = xh + f.ball, an = rot(f.back - f.ball, f.up, a), hl = rot(-f.ball, 0, a);
+      return { heel: [bx + hl[0], hl[1]], ankle: [bx + an[0], an[1]], ball: [bx, 0], toe: [bx + 6, 0], cop: bx + 1 };
+    }
+    return { heel: [xh, 0], ankle: [xh + f.back, f.up], ball: [xh + f.ball, 0], toe: [xh + f.len, 0], cop: xh + 8 };
+  }
+
+  function knee(H, A) {
+    const dx = A[0] - H[0], dy = A[1] - H[1], dd = Math.hypot(dx, dy);
+    if (dd > B.T + B.S - 0.05 || dd < 1) return null;
+    const a = (B.T * B.T - B.S * B.S + dd * dd) / (2 * dd), h = Math.sqrt(Math.max(0, B.T * B.T - a * a));
+    const mx = H[0] + a * dx / dd, my = H[1] + a * dy / dd;
+    const k1 = [mx - h * dy / dd, my + h * dx / dd], k2 = [mx + h * dy / dd, my - h * dx / dd];
+    return k1[1] > k2[1] ? k1 : k2;
+  }
+
+  function torso(hy, lam, Sy) {
+    let lo = -1.3, hi = 1.2;
+    const f = t => Sy + B.th * Math.sin(t) + B.lum * Math.sin(t - lam) - hy;
+    for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (f(m) > 0) hi = m; else lo = m; }
+    const t = (lo + hi) / 2;
+    const L1 = [B.sh.x + B.th * Math.cos(t), Sy + B.th * Math.sin(t)];
+    const H = [L1[0] + B.lum * Math.cos(t - lam), L1[1] + B.lum * Math.sin(t - lam)];
+    return { th: t, L1, H };
+  }
+
+  function hipAngle(H, L1, K) {
+    const au = Math.atan2(L1[1] - H[1], L1[0] - H[0]), av = Math.atan2(K[1] - H[1], K[0] - H[0]);
+    return (((au - av) * R2D) % 360 + 360) % 360;
+  }
+
+  function poseAt(f, hy, lam, Sy) {
+    const T = torso(hy, lam, Sy), K = knee(T.H, f.ankle);
+    if (!K) return null;
+    return { S0: [B.sh.x, Sy], L1: T.L1, H: T.H, K, A: f.ankle, hip: hipAngle(T.H, T.L1, K), th: T.th };
+  }
+
+  function neutralHeight(f, Sy) {
+    let lo = B.hy0, hi = Sy + 30;
+    for (let i = 0; i < 40; i++) {
+      const m = (lo + hi) / 2, P = poseAt(f, m, 0, Sy);
+      const over = !P || P.hip > 180;
+      if (over) hi = m; else lo = m;
+    }
+    return (lo + hi) / 2;
+  }
+
+  function sOn(st) {
+    const base = { along: 100, chest: 96, overhead: 88 }[st.arms] || 100;
+    return clamp(base - st.load * 0.08, 70, 100);
+  }
+
+  function pose(st, sOverride) {
+    const s = sOverride == null ? st.s : sOverride;
+    const Sy = st.bench + B.benchOff, f = foot(st), hyN = neutralHeight(f, Sy), on = sOn(st);
+    let hy = s <= 100 ? B.hy0 + (hyN - B.hy0) * s / 100 : hyN + (s - 100) / 25 * 7;
+    const lam = clamp((s - on) / (S_MAX - on), 0, 1) * 32 * D2R;
+    let P = poseAt(f, hy, lam, Sy), limited = false;
+    if (!P) {
+      let lo = B.hy0, hi = hy;
+      for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (poseAt(f, m, lam, Sy)) lo = m; else hi = m; }
+      hy = lo; P = poseAt(f, hy, lam, Sy); limited = true;
+    }
+    const kv = [P.H[0] - P.K[0], P.H[1] - P.K[1]], av = [P.A[0] - P.K[0], P.A[1] - P.K[1]];
+    const kneeAng = Math.acos(clamp((kv[0] * av[0] + kv[1] * av[1]) / (Math.hypot(...kv) * Math.hypot(...av)), -1, 1)) * R2D;
+    const e = [P.K[0] - P.S0[0], P.K[1] - P.S0[1]], w = [P.H[0] - P.S0[0], P.H[1] - P.S0[1]];
+    const above = (e[0] * w[1] - e[1] * w[0]) / Math.hypot(...e);          // + выше линии плечи–колено
+    return Object.assign(P, {
+      f, heel: f.heel, ball: f.ball, toe: f.toe, cop: f.cop, hy, hyN, lam: lam * R2D, lamOn: on, kneeAng,
+      above, limited, s, shank: Math.atan2(P.A[0] - P.K[0], -(P.A[1] - P.K[1])) * R2D  // наклон голени от вертикали (+ стопа дальше колена)
+    });
+  }
+
+  function loads(P, st) {
+    const g = 9.81, BW = B.BW, L = st.load;
+    const mTr = .497 * BW, mTh = .2 * BW, mSh = .093 * BW, mFt = .029 * BW;
+    const xsh = 2, xc = P.cop, H = P.H, K = P.K, A = P.A;
+    const xTr = H[0] + .47 * (P.S0[0] - H[0]);
+    const xTh = H[0] + .43 * (K[0] - H[0]);
+    const xSh = K[0] + .43 * (A[0] - K[0]);
+    const xFt = (P.heel[0] + P.toe[0]) / 2;
+    const sum = mTr * (xTr - xsh) + mTh * (xTh - xsh) + mSh * (xSh - xsh) + mFt * (xFt - xsh) + L * (H[0] - xsh);
+    const F = g * sum / (xc - xsh);                          // сила на обе стопы, Н
+    const k = smooth(clamp((P.hy - B.hy0) / 6, 0, 1));       // таз оторвался от пола
+    const legM = g * (mTh * (xTh - H[0]) + mSh * (xSh - H[0]) + mFt * (xFt - H[0]));
+    const arm = (xc - H[0]);                                 // плечо силы реакции опоры, см
+    const Mhip = Math.max(0, (F * k * arm - legM * k) / 100 / 2);   // Н·м на одну ногу
+    const Fleg = F * k / 2;
+    const Mknee = Fleg * (xc - K[0]) / 100;                  // + : бицепс бедра держит колено; − : квадрицепс
+    return { F: F * k, Fleg, Mhip, Mknee, arm, bwPct: F * k / (g * (BW + L)) * 100, xTr, xSh, xTh, xFt, k };
+  }
+
+  function activations(P, st, Ld) {
+    const s = P.s, hipPct = clamp(s, 0, 100) / 100;
+    const sup = st.support, wide = st.w - 30, kk = st.k;
+    // 1. Разделяем момент в ТБС между ягодичной и задней поверхностью бедра
+    const hamNeedKnee = Math.max(0, Ld.Mknee), quadNeed = Math.max(0, -Ld.Mknee);
+    let hamHip = clamp(Math.max(hamNeedKnee * 1.2, Ld.Mhip * 0.18), 0, Ld.Mhip * 0.6);
+    if (sup === 'heel') hamHip *= 1.12; if (sup === 'toe') hamHip *= 0.8;
+    const hamKneeTot = hamHip * (3.5 / 6);
+    let quadM = quadNeed + Math.max(0, hamKneeTot - hamNeedKnee) * 0.7;
+    if (sup === 'toe') quadM = quadM * 1.5 + Ld.Mhip * 0.2; if (sup === 'heel') quadM *= 0.55;
+    let gluteM = Math.max(0, Ld.Mhip - hamHip) + quadM * 0.12;
+    if (sup === 'heel') gluteM *= 1.04; if (sup === 'toe') gluteM *= 0.85;
+    gluteM *= 1 + 0.004 * clamp(st.phi, 0, 40) + 0.12 * Math.max(0, kk) * 0.5;
+    // 2. Проценты от условной максимальной способности (на одну ногу)
+    const gmax = clamp(gluteM / 32 * 100, 0, 100);
+    const ham = clamp(hamHip / 26 * 100, 0, 100);
+    const quad = clamp((8 * hipPct + quadM / 30 * 100) * (sup === 'heel' ? 0.7 : 1), 0, 100);
+    const gmed = clamp(10 + gmax * 0.28 + Math.max(0, wide) * 0.5 + 10 * Math.abs(Math.min(0, kk)) + 0.18 * clamp(st.phi, 0, 45), 0, 100);
+    const add = clamp(10 + gmax * 0.12 + Math.max(0, -wide) * 1.6 + 14 * Math.max(0, -kk) + Math.max(0, wide - 14) * 0.5, 0, 100);
+    const armF = { along: 1, chest: 1.08, overhead: 1.25 }[st.arms] || 1;
+    const eBase = (8 + 0.16 * clamp(s, 0, 100) * hipPct + st.load * 0.22) * armF;
+    const eras = clamp(eBase + P.lam * 2.1 + Math.max(0, P.above) * 2.5, 0, 100);
+    const abs = clamp(24 + 0.2 * clamp(s, 0, 100) - P.lam * 1.0 + st.load * 0.1, 4, 70);
+    const tib = sup === 'heel' ? 58 + 0.1 * s : sup === 'toe' ? 3 : 10;
+    const calf = sup === 'toe' ? 48 + 0.18 * s + st.load * 0.2 : sup === 'heel' ? 4 : 11;
+    const shin = Math.max(tib, calf);
+    return { gmax, gmed, ham, quad, add, eras, abs, tib, calf, shin };
+  }
+
+  function issues(P, st, A, Ld) {
+    const out = [];
+    const add = (lvl, title, why, fix) => out.push({ lvl, title, why, fix });
+    const kneeAhead = P.K[0] - P.A[0];       // + колено дальше стопы
+    if (P.above <= 1.8 && P.lam > 8) add('err', 'Поясница прогибается раньше времени',
+      'Рёбра раскрываются, и таз добирает высоту за счёт поясницы. Причина: положение рук или лишний вес.',
+      'Рёбра вниз, руки вдоль тела, таз слегка подкрутить.');
+    if (P.above > 1.8) add('err', 'Таз выше линии «плечи — колени»',
+      'Ягодицы уже дали полное разгибание бедра. Дальше таз поднимается за счёт прогиба поясницы, и нагрузка уходит с ягодиц на позвоночник.',
+      'Остановитесь, когда плечи, таз и колени на одной линии. Рёбра вниз, таз слегка подкрутить.');
+    if (st.support === 'toe') add('err', 'Пятки оторваны от пола',
+      'Опора смещается на переднюю часть стопы: работают квадрицепс и икры, ягодицам достаётся меньше.',
+      'Пятки прижать к полу и давить ими в пол.');
+    const top = P.s >= 85;
+    if (top && st.support !== 'toe' && kneeAhead < -8) add('err', 'Стопы слишком далеко',
+      'Голень «ложится» вперёд, бицепс бедра берёт большую часть работы. Возможны судороги сзади бедра.',
+      'Приблизьте пятки к ягодицам: чтобы можно было коснуться их пальцами.');
+    if (top && kneeAhead > 6) add('err', 'Стопы слишком близко',
+      'Колени уходят вперёд за стопы, нагрузка переходит на квадрицепс и коленные суставы.',
+      'Отодвиньте стопы так, чтобы в верхней точке голень была почти вертикальна.');
+    if (st.k < -0.35) add('err', 'Колени заваливаются внутрь',
+      'Средняя ягодичная не держит бедро, растёт нагрузка на коленные связки и приводящие мышцы.',
+      'Направляйте колени туда же, куда смотрят носки. Можно мини-петлю на колени.');
+    else if (st.k > 0.75) add('warn', 'Колени слишком широко',
+      'Больше работают средняя ягодичная и наружная часть бедра, амплитуда в ТБС падает.', 'Верните колени на линию стоп.');
+    if (st.w < 17) add('warn', 'Стопы слишком узко', 'Колени сводятся, растёт нагрузка на приводящие мышцы.', 'Поставьте стопы на ширину таза.');
+    if (st.w > 48) add('warn', 'Стопы слишком широко', 'Ягодицы работают с меньшей амплитудой, больше нагрузка на приводящие и колени.', 'Сузьте стойку до ширины таза.');
+    if (st.phi > 32) add('warn', 'Носки сильно развёрнуты', 'Колени уходят в стороны, легко потерять ровную линию.', 'Развернуть носки не больше чем на 10–20°.');
+    if (st.arms === 'overhead') add('warn', 'Руки подняты вверх',
+      'Рёбра раскрываются, поясница прогибается раньше. Пропадает опора.', 'Руки вдоль тела, ладони вниз.');
+    if (st.arms === 'chest') add('warn', 'Руки на груди', 'Меньше опоры, корпус стабилизируется только мышцами.', 'Для обучения руки вдоль тела.');
+    if (st.load >= 30 && (P.lam > 3 || P.above > 1)) add('err', 'Вес и прогиб в пояснице',
+      'С отягощением перегиб в пояснице особенно опасен для позвоночника.', 'Снизьте вес, пока не научитесь останавливаться на линии.');
+    if (P.s < 92 && P.s > 0 && !out.length) add('tip', 'Таз ещё не в верхней точке',
+      'Ягодицы получают полную нагрузку только когда бедро выпрямлено.', 'Поднимайте таз до прямой линии от плеч до колен.');
+    if (st.support === 'heel' && !out.some(o => o.lvl === 'err')) add('tip', 'Вариант: носки вверх',
+      'Нагрузка смещается на пятку: больше бицепс бедра и ягодицы, меньше квадрицепс.', 'Хороший вариант, если колени перегружаются.');
+    if (P.limited) add('warn', 'Стопы слишком далеко — таз выше не поднять', 'Ноги выпрямились до предела.', 'Приблизьте стопы.');
+    return out;
+  }
+
+  function analyze(st, sOverride) {
+    const P = pose(st, sOverride);
+    const Ld = loads(P, st);
+    const A = activations(P, st, Ld);
+    return { P, Ld, A, issues: issues(P, st, A, Ld) };
+  }
+
+  const M = { B, DEFAULTS, S_MAX, HX0, foot, pose, loads, activations, issues, analyze, sOn, clamp, lerp, D2R, R2D };
+  if (typeof module !== 'undefined' && module.exports) module.exports = M; else root.GB = M;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>/* Рисование фигуры (вид сбоку), график, вид спереди. Всё в см → пиксели. */
+(function () {
+  'use strict';
+  const SC = 5.5, X0 = 40, Y0 = 300;
+  const sx = x => (x + X0) * SC, sy = y => Y0 - y * SC;
+  const pt = p => [sx(p[0]), sy(p[1])];
+  const f1 = v => v.toFixed(1);
+  const C = { skin: '#dfae84', skin2: '#c98f66', hair: '#3a2417', top: '#2b2724', tline: '#4a443d', leg: '#34302b', lline: '#57504a', shoe: '#efe9e0', sole: '#ff7a1a' };
+
+  function tap(p1, p2, r1, r2, fill, stroke, extra) {
+    const a = pt(p1), b = pt(p2), dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1;
+    const nx = -dy / L, ny = dx / L, R1 = r1 * SC, R2 = r2 * SC;
+    const d = `M${f1(a[0] + nx * R1)} ${f1(a[1] + ny * R1)}L${f1(b[0] + nx * R2)} ${f1(b[1] + ny * R2)}A${f1(R2)} ${f1(R2)} 0 0 0 ${f1(b[0] - nx * R2)} ${f1(b[1] - ny * R2)}L${f1(a[0] - nx * R1)} ${f1(a[1] - ny * R1)}A${f1(R1)} ${f1(R1)} 0 0 0 ${f1(a[0] + nx * R1)} ${f1(a[1] + ny * R1)}Z`;
+    return `<path d="${d}" fill="${fill}"${stroke ? ` stroke="${stroke}" stroke-width="1.2"` : ''}${extra || ''}/>`;
+  }
+  const circ = (p, r, fill, stroke, extra) => { const q = pt(p); return `<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="${f1(r * SC)}" fill="${fill}"${stroke ? ` stroke="${stroke}" stroke-width="1.2"` : ''}${extra || ''}/>`; };
+  const add = (p, v, k) => [p[0] + v[0] * k, p[1] + v[1] * k];
+  const unit = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1; return [dx / L, dy / L]; };
+  const downN = u => [u[1], -u[0]];             // нормаль «вниз к полу» для направления u
+  const heat = v => {
+    const t = Math.max(0, Math.min(1, v / 100));
+    if (t < 0.04) return 'rgba(255,200,120,0)';
+    const g = Math.round(200 - 165 * t), b = Math.round(70 - 40 * t);
+    return `rgba(255,${g},${b},${(0.16 + 0.7 * t).toFixed(2)})`;
+  };
+
+  function armPts(st) {
+    if (st.arms === 'chest') return [[0, 10.5], [10, 3.5], [3.5, 17.5], [1.5, 19.5]];
+    if (st.arms === 'overhead') return [[0, 10.5], [-20, 4.5], [-35, 3.2], [-40, 3.2]];
+    return [[0, 10.5], [27, 3.6], [51, 3.2], [59, 3.2]];
+  }
+
+  function figure(r, st, lay) {
+    const P = r.P, A = r.A, g = [];
+    const U = unit(P.H, P.K), Un = downN(U);
+    const tU = unit(P.L1, P.H), tN = downN(tU);       // вдоль поясницы и «вниз»
+    const sU = unit(P.K, P.A), sN = downN(sU);
+    const hot = P.lam > 6;
+    // пол
+    g.push(`<rect x="${f1(sx(-48))}" y="${f1(sy(0))}" width="${f1((118 + 48) * SC)}" height="14" rx="6" fill="#1c1916"/><rect x="${f1(sx(-48))}" y="${f1(sy(0))}" width="${f1((118 + 48) * SC)}" height="2.5" rx="1.2" fill="#ff7a1a" opacity=".75"/>`);
+    g.push(`<ellipse cx="${f1(sx(28))}" cy="${f1(sy(0) - 1)}" rx="${f1(30 * SC)}" ry="3" fill="#000" opacity=".35"/>`);
+    // эталон
+    if (lay.ghost) {
+      const G = GB.pose(GB.DEFAULTS, 100), pl = [G.S0, G.L1, G.H, G.K, G.A, G.toe].map(pt).map(q => f1(q[0]) + ',' + f1(q[1])).join(' ');
+      g.push(`<polyline points="${pl}" fill="none" stroke="#46d37f" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>`);
+      const q = pt(G.H); g.push(`<text class="tg" x="${f1(q[0])}" y="${f1(q[1] - 22)}" text-anchor="middle">эталон</text>`);
+    }
+    // дальняя рука
+    const ar = armPts(st);
+    // голова и шея
+    const hc = [-13.5, 9.5];
+    g.push(tap([-1, 10], [-8, 9.5], 3.6, 3.2, C.skin2));
+    g.push(circ([-22.5, 6.5], 4, C.hair));
+    g.push(circ(hc, 8.4, C.skin, C.skin2));
+    g.push(`<path d="M${f1(sx(-21.8))} ${f1(sy(9))}A${f1(9 * SC)} ${f1(9 * SC)} 0 0 1 ${f1(sx(-9))} ${f1(sy(16.5))}Q${f1(sx(-13))} ${f1(sy(13))} ${f1(sx(-21.8))} ${f1(sy(9))}Z" fill="${C.hair}"/>`);
+    g.push(`<path d="M${f1(sx(-13.5))} ${f1(sy(17.7))}l${f1(1.6 * SC)} ${f1(-1.1 * SC)}l${f1(-1.8 * SC)} ${f1(-.9 * SC)}Z" fill="${C.skin2}"/><path d="M${f1(sx(-17.5))} ${f1(sy(14.3))}q${f1(1.6 * SC)} ${f1(.7 * SC)} ${f1(3.1 * SC)} 0" stroke="#5a3a28" stroke-width="1.5" fill="none" stroke-linecap="round"/>`);
+    // ноги (дальняя сторона для глубины: чуть темнее и смещена)
+    const far = [0, 0];
+    g.push(tap(P.H, P.K, 8, 5.4, '#2a2723', C.lline));
+    // туловище
+    g.push(tap(P.S0, P.L1, 8.6, 7.4, C.top, C.tline));
+    g.push(tap(P.L1, P.H, 7.4, 9.4, C.top, C.tline));
+    const bu = add(P.S0, unit(P.S0, P.L1), 8), bn = [-downN(unit(P.S0, P.L1))[0], -downN(unit(P.S0, P.L1))[1]];
+    g.push(circ(add(bu, bn, 5.2), 4.6, C.top, C.tline));
+    g.push(circ(add(P.S0, bn, 0), 0.01, 'none'));
+    // ягодица и бедро в леггинсах
+    g.push(circ(add(P.H, Un, 2.6), 9.9, C.leg, C.lline));
+    g.push(tap(P.H, P.K, 8.2, 5.4, C.leg, C.lline));
+    g.push(tap(P.K, P.A, 5.4, 3.5, C.leg, C.lline));
+    g.push(circ(P.K, 5.5, C.leg, C.lline));
+    // стопа
+    const fo = [P.heel, P.A, P.toe], dirF = unit(P.heel, P.toe), upF = [-dirF[1], dirF[0]];
+    const fp = [add(P.heel, dirF, -1.2), add(P.A, dirF, -1.4), add(P.A, upF, 1.5), add(P.ball, upF, 3.8), add(P.toe, upF, 2), add(P.toe, dirF, .8), add(P.toe, upF, -.1), add(P.heel, upF, -.1)];
+    g.push(`<path d="M${fp.map(pt).map(q => f1(q[0]) + ' ' + f1(q[1])).join('L')}Z" fill="${C.shoe}" stroke="#bdb5aa" stroke-width="1"/>`);
+    const so = [add(P.heel, dirF, -1.2), add(P.toe, dirF, .8)].map(pt);
+    g.push(`<line x1="${f1(so[0][0])}" y1="${f1(so[0][1])}" x2="${f1(so[1][0])}" y2="${f1(so[1][1])}" stroke="${C.sole}" stroke-width="4" stroke-linecap="round"/>`);
+    // рука (ближняя)
+    g.push(tap(ar[0], ar[1], 3.6, 2.9, C.skin, C.skin2));
+    g.push(tap(ar[1], ar[2], 2.9, 2.2, C.skin, C.skin2));
+    g.push(circ(ar[3], 2.5, C.skin, C.skin2));
+    // мышцы
+    if (lay.muscles) {
+      const mus = [];
+      const gc = add(add(P.H, Un, 4.5), U, 2.4), ga = Math.atan2(-(U[1]), U[0]) * 180 / Math.PI, q = pt(gc);
+      mus.push(`<ellipse cx="${f1(q[0])}" cy="${f1(q[1])}" rx="${f1(11 * SC)}" ry="${f1(7.4 * SC)}" transform="rotate(${f1(-ga * -1)} ${f1(q[0])} ${f1(q[1])})" fill="${heat(A.gmax)}" class="mu"/>`);
+      mus.push(tap(add(P.H, Un, 5.2), add(P.K, Un, 3.1), 3.2, 2.1, heat(A.ham), null, ' class="mu"'));
+      mus.push(tap(add(P.H, Un, -4.2), add(P.K, Un, -3.0), 3.0, 2.2, heat(A.quad), null, ' class="mu"'));
+      mus.push(tap(add(P.K, sN, 2.4), add(P.A, sN, 1.4), 2.6, 1.7, heat(A.calf), null, ' class="mu"'));
+      mus.push(tap(add(P.K, sN, -2.6), add(P.A, sN, -1.6), 1.8, 1.2, heat(A.tib), null, ' class="mu"'));
+      mus.push(tap(add(P.L1, tN, 4.8), add(P.H, tN, 5.6), 2.8, 2.8, heat(A.eras), null, ' class="mu"'));
+      mus.push(tap(add(P.L1, tN, -4.6), add(P.H, tN, -5.4), 2.8, 2.8, heat(A.abs), null, ' class="mu"'));
+      g.push(mus.join(''));
+    }
+    // скелет
+    if (lay.skeleton) {
+      const pl = [P.S0, P.L1, P.H, P.K, P.A, P.toe].map(pt).map(q => f1(q[0]) + ',' + f1(q[1])).join(' ');
+      g.push(`<polyline points="${pl}" fill="none" stroke="#f4efe8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>`);
+    }
+    // поясница
+    const lp = [P.L1, P.H].map(pt);
+    g.push(`<line x1="${f1(lp[0][0])}" y1="${f1(lp[0][1])}" x2="${f1(lp[1][0])}" y2="${f1(lp[1][1])}" stroke="${hot ? '#ff3d2e' : '#ffb23f'}" stroke-width="${hot ? 7 : 3}" stroke-linecap="round" opacity="${hot ? .9 : .55}"/>`);
+    if (hot) { const m = pt(add(P.L1, tN, 12)); g.push(`<text class="tr" x="${f1(m[0])}" y="${f1(Math.min(m[1] + 8, 316))}" text-anchor="middle">поясница включилась</text>`); }
+    // силы
+    if (lay.forces) {
+      const L = r.Ld, c = pt([P.cop, 0]), h = pt(P.H), arm = Math.abs(P.cop - P.H[0]);
+      g.push(`<line x1="${f1(c[0])}" y1="${f1(c[1])}" x2="${f1(c[0])}" y2="${f1(h[1])}" stroke="#ff7a1a" stroke-width="2" stroke-dasharray="6 5"/>`);
+      g.push(`<line x1="${f1(h[0])}" y1="${f1(h[1])}" x2="${f1(c[0])}" y2="${f1(h[1])}" stroke="#ffb23f" stroke-width="2.5"/>`);
+      g.push(`<text class="tg2" x="${f1((h[0] + c[0]) / 2)}" y="${f1(h[1] - 6)}" text-anchor="middle">плечо ${Math.round(arm)} см</text>`);
+      const ah = Math.max(14, Math.min(60, L.bwPct * 1.1)), top = c[1] - ah;
+      g.push(`<line x1="${f1(c[0])}" y1="${f1(c[1])}" x2="${f1(c[0])}" y2="${f1(top)}" stroke="#ff7a1a" stroke-width="4"/><path d="M${f1(c[0] - 6)} ${f1(top + 9)}L${f1(c[0])} ${f1(top - 2)}L${f1(c[0] + 6)} ${f1(top + 9)}Z" fill="#ff7a1a"/>`);
+    }
+    // суставы
+    [['ТБС', P.H, -13], ['колено', P.K, -13], ['', P.A, 0]].forEach(j => {
+      const q = pt(j[1]); g.push(`<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="5" fill="#161412" stroke="#ff7a1a" stroke-width="2.5"/>`);
+      if (j[0]) g.push(`<text class="tj" x="${f1(q[0])}" y="${f1(q[1] + j[2])}" text-anchor="middle">${j[0]}</text>`);
+    });
+    return g.join('');
+  }
+
+  function chart(st, cur) {
+    const W = 340, X1 = 34, X2 = 330, YT = 12, YB = 140, mx = GB.S_MAX;
+    const X = s => X1 + s / mx * (X2 - X1), Y = v => YB - Math.max(0, Math.min(100, v)) / 100 * (YB - YT);
+    const on = GB.sOn(st), ser = { gmax: [], ham: [], eras: [] };
+    for (let s = 0; s <= mx; s += 5) { const a = GB.analyze(st, s).A; ['gmax', 'ham', 'eras'].forEach(k => ser[k].push(`${f1(X(s))},${f1(Y(a[k]))}`)); }
+    const o = [];
+    o.push(`<rect x="${f1(X(on))}" y="${YT}" width="${f1(X2 - X(on))}" height="${YB - YT}" fill="#ff3d2e" opacity=".14"/>`);
+    [0, 50, 100].forEach(v => o.push(`<line x1="${X1}" y1="${f1(Y(v))}" x2="${X2}" y2="${f1(Y(v))}" stroke="#2d2925"/><text class="ta" x="${X1 - 6}" y="${f1(Y(v) + 4)}" text-anchor="end">${v}%</text>`));
+    [[0, 'пол'], [50, '50'], [100, 'верх'], [mx, 'прогиб']].forEach(t => o.push(`<text class="ta" x="${f1(X(t[0]))}" y="${YB + 16}" text-anchor="${t[0] === 0 ? 'start' : t[0] === mx ? 'end' : 'middle'}">${t[1]}</text>`));
+    const cl = { gmax: '#ff7a1a', ham: '#ffd08a', eras: '#ff3d2e' };
+    Object.keys(ser).forEach(k => o.push(`<polyline points="${ser[k].join(' ')}" fill="none" stroke="${cl[k]}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>`));
+    o.push(`<line x1="${f1(X(cur.P.s))}" y1="${YT}" x2="${f1(X(cur.P.s))}" y2="${YB}" stroke="#f4efe8" stroke-width="1.5" stroke-dasharray="4 3"/>`);
+    Object.keys(cl).forEach(k => o.push(`<circle cx="${f1(X(cur.P.s))}" cy="${f1(Y(cur.A[k]))}" r="4.5" fill="${cl[k]}" stroke="#0c0b0a" stroke-width="1.5"/>`));
+    o.push(`<g class="ta"><circle cx="40" cy="162" r="4" fill="${cl.gmax}"/><text x="48" y="166">ягодицы</text><circle cx="120" cy="162" r="4" fill="${cl.ham}"/><text x="128" y="166">бицепс бедра</text><circle cx="222" cy="162" r="4" fill="${cl.eras}"/><text x="230" y="166">поясница</text></g>`);
+    return o.join('');
+  }
+
+  function front(r, st) {
+    const P = r.P, o = [], cx = 170, S = 4.2, hy = 24;
+    const Yv = y => 180 - y * 3.4;
+    const side = sg => {
+      const hip = cx + sg * 9 * S * .9, an = cx + sg * st.w / 2 * S * .9;
+      const kn = hip + (an - hip) * (P.K[1] - P.H[1] === 0 ? .5 : (P.K[1] - P.H[1]) / (P.A[1] - P.H[1])) + sg * st.k * 8 * S * .9;
+      const hp = [hip, Yv(P.H[1])], kp = [kn, Yv(P.K[1])], ap = [an, Yv(P.A[1])];
+      const bad = st.k < -.35 || st.k > .75;
+      return { hp, kp, ap, bad, an };
+    };
+    [-1, 1].forEach(sg => {
+      const s = side(sg);
+      o.push(`<line x1="${f1(s.hp[0])}" y1="${f1(s.hp[1])}" x2="${f1(s.ap[0])}" y2="${f1(s.ap[1])}" stroke="#46d37f" stroke-width="2" stroke-dasharray="5 5" opacity=".7"/>`);
+      o.push(`<polyline points="${f1(s.hp[0])},${f1(s.hp[1])} ${f1(s.kp[0])},${f1(s.kp[1])} ${f1(s.ap[0])},${f1(s.ap[1])}" fill="none" stroke="#dfae84" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>`);
+      o.push(`<polyline points="${f1(s.hp[0])},${f1(s.hp[1])} ${f1(s.kp[0])},${f1(s.kp[1])} ${f1(s.ap[0])},${f1(s.ap[1])}" fill="none" stroke="#34302b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>`);
+      o.push(`<circle cx="${f1(s.kp[0])}" cy="${f1(s.kp[1])}" r="6" fill="${s.bad ? '#ff3d2e' : '#161412'}" stroke="${s.bad ? '#ff8a7f' : '#ff7a1a'}" stroke-width="2.5"/>`);
+      const a = st.phi * Math.PI / 180 * sg, fx = s.ap[0], fy = s.ap[1] + 12;
+      o.push(`<path d="M${f1(fx - 8)} ${f1(fy + 2)}L${f1(fx - 8 + Math.sin(a) * 6)} ${f1(fy - 18)}L${f1(fx + 8 + Math.sin(a) * 6)} ${f1(fy - 18)}L${f1(fx + 8)} ${f1(fy + 2)}Z" fill="#efe9e0" transform="rotate(${f1(st.phi * sg)} ${f1(fx)} ${f1(fy)})" opacity=".92"/>`);
+    });
+    const l = side(-1), rr = side(1);
+    o.push(`<rect x="${f1(l.hp[0] - 12)}" y="${f1(l.hp[1] - 9)}" width="${f1(rr.hp[0] - l.hp[0] + 24)}" height="20" rx="10" fill="#34302b" stroke="#57504a"/>`);
+    o.push(`<line x1="20" y1="${f1(Yv(0) + 14)}" x2="320" y2="${f1(Yv(0) + 14)}" stroke="#ff7a1a" stroke-width="2" opacity=".7"/>`);
+    o.push(`<text class="ta" x="170" y="14" text-anchor="middle">${st.k < -.35 ? 'колени внутрь: нагрузка на связки' : st.k > .75 ? 'колени слишком широко' : 'колени на линии стоп'}</text>`);
+    return o.join('');
+  }
+
+  window.GBFig = { figure, chart, front };
+})();
+</script>
+<script>/* Фигура v2: полупрозрачный силуэт, кости, скамья, штанга. Заменяет GBFig.figure */
+(function () {
+  'use strict';
+  const SC = 5.5, X0 = 40, Y0 = 372;
+  const sx = x => (x + X0) * SC, sy = y => Y0 - y * SC;
+  const pt = p => [sx(p[0]), sy(p[1])];
+  const f1 = v => v.toFixed(1);
+  const add = (p, v, k) => [p[0] + v[0] * k, p[1] + v[1] * k];
+  const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+  const unit = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1; return [dx / L, dy / L]; };
+  const downN = u => [u[1], -u[0]];
+  const ang = u => Math.atan2(-u[1], u[0]) * 180 / Math.PI;     // угол на экране (по часовой +)
+  const heat = v => {
+    const t = Math.max(0, Math.min(1, v / 100));
+    if (t < 0.04) return 'rgba(255,200,120,0)';
+    return `rgba(255,${Math.round(200 - 165 * t)},${Math.round(70 - 40 * t)},${(0.16 + 0.7 * t).toFixed(2)})`;
+  };
+
+  function capsule(p1, p2, r1, r2) {
+    const a = pt(p1), b = pt(p2), dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1;
+    const nx = -dy / L, ny = dx / L, R1 = r1 * SC, R2 = r2 * SC;
+    return `M${f1(a[0] + nx * R1)} ${f1(a[1] + ny * R1)}L${f1(b[0] + nx * R2)} ${f1(b[1] + ny * R2)}A${f1(R2)} ${f1(R2)} 0 0 0 ${f1(b[0] - nx * R2)} ${f1(b[1] - ny * R2)}L${f1(a[0] - nx * R1)} ${f1(a[1] - ny * R1)}A${f1(R1)} ${f1(R1)} 0 0 0 ${f1(a[0] + nx * R1)} ${f1(a[1] + ny * R1)}Z`;
+  }
+  function disc(p, r) { const q = pt(p), R = r * SC; return `M${f1(q[0] - R)} ${f1(q[1])}a${f1(R)} ${f1(R)} 0 1 0 ${f1(2 * R)} 0a${f1(R)} ${f1(R)} 0 1 0 ${f1(-2 * R)} 0Z`; }
+  function chain(p1, p2, stops) {      // stops: [[t, r], ...]
+    let d = '';
+    for (let i = 0; i < stops.length - 1; i++) d += capsule(mix(p1, p2, stops[i][0]), mix(p1, p2, stops[i + 1][0]), stops[i][1], stops[i + 1][1]);
+    return d;
+  }
+  const line = (a, b, w, c, op, extra) => { const p = pt(a), q = pt(b); return `<line x1="${f1(p[0])}" y1="${f1(p[1])}" x2="${f1(q[0])}" y2="${f1(q[1])}" stroke="${c}" stroke-width="${w}" stroke-linecap="round" opacity="${op}"${extra || ''}/>`; };
+  const dotp = (p, r, fill, stroke) => { const q = pt(p); return `<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="${r}" fill="${fill}"${stroke ? ` stroke="${stroke}" stroke-width="1.3"` : ''}/>`; };
+
+  function arms(st, Sy, P) {
+    if (st.arms === 'chest') return [[0, Sy], [8, Sy - 4.5], [2.5, Sy + 6.5], [1, Sy + 8.5]];
+    if (st.arms === 'overhead') return [[0, Sy], [3.5, Sy + 11], [3.5, Sy + 22], [3.5, Sy + 26]];
+    const s0 = [P.S0[0] - .5, Sy - 1.5], e = [s0[0] + 6.8, s0[1] - 26.2], w = [e[0] + 20.4, Math.max(3.8, e[1] - 12.7)];   // рука свисает вдоль скамьи, локоть согнут
+    return [s0, e, w, [w[0] + 6.8, Math.max(2.6, w[1] - 4.2)]];
+  }
+
+  function figure(r, st, lay) {
+    const P = r.P, A = r.A, g = [], Sy = P.S0[1], Hb = st.bench;
+    const U = unit(P.H, P.K), Un = downN(U);
+    const tU = unit(P.L1, P.H), tN = downN(tU);
+    const sU = unit(P.K, P.A), sN = downN(sU);
+    const hot = P.lam > 6;
+    const aR = unit(P.L1, P.S0), aT = unit([0, 0], [aR[0] * .62 - .38, aR[1] * .62]), dr = 6 * Math.PI / 180;
+    const a = [aT[0] * Math.cos(dr) - aT[1] * Math.sin(dr), aT[0] * Math.sin(dr) + aT[1] * Math.cos(dr)];   // ось головы: продолжение позвоночника, подбородок чуть к груди
+    const f = [a[1], -a[0]];                                        // «вверх» для лица
+    const hc = add(P.S0, a, 21.5);
+    const hp = (ka, kf) => add(add(hc, a, ka), f, kf);
+
+    // пол
+    g.push(`<rect x="${f1(sx(-48))}" y="${f1(sy(0))}" width="${f1((124 + 48) * SC)}" height="14" rx="6" fill="#1c1916"/><rect x="${f1(sx(-48))}" y="${f1(sy(0))}" width="${f1((124 + 48) * SC)}" height="2.5" rx="1.2" fill="#ff7a1a" opacity=".75"/>`);
+    // скамья
+    const bp = (x1, y1, x2, y2, rx, fill, stroke) => `<rect x="${f1(sx(x1))}" y="${f1(sy(y2))}" width="${f1((x2 - x1) * SC)}" height="${f1((y2 - y1) * SC)}" rx="${rx}" fill="${fill}"${stroke ? ` stroke="${stroke}" stroke-width="1.2"` : ''}/>`;
+    g.push(bp(-6.5, 0, -1.5, Hb - 7, 2, '#2f2a26', '#4a443d'));
+    g.push(bp(-14, 0, 5, 3, 2, '#2f2a26', '#4a443d'));
+    g.push(bp(-11, Hb - 7, 3.6, Hb, 5, '#262220', '#5a534b'));
+    g.push(bp(-9.5, Hb - 0.9, 2.2, Hb, 1, '#ff7a1a'));
+    g.push(`<text class="ta" x="${f1(sx(-7.5))}" y="${f1(sy(Hb - 9.5))}" text-anchor="end" style="fill:#8d857b">скамья ${Hb} см</text>`);
+
+    // эталон
+    if (lay.ghost) {
+      const G = GB.pose(Object.assign({}, GB.DEFAULTS, { bench: st.bench }), 100), pl = [G.S0, G.L1, G.H, G.K, G.A, G.toe].map(pt).map(q => f1(q[0]) + ',' + f1(q[1])).join(' ');
+      g.push(`<polyline points="${pl}" fill="none" stroke="#46d37f" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>`);
+      const q = pt(G.H); g.push(`<text class="tg" x="${f1(q[0])}" y="${f1(q[1] - 26)}" text-anchor="middle">эталон</text>`);
+    }
+
+    if (lay.anat && window.GBFig.body3) { g.push(window.GBFig.body3(r, st)); } else {
+    // силуэт: единая полупрозрачная заливка с яркой кромкой
+    const ar = arms(st, Sy, P), calfC = add(mix(P.K, P.A, .3), sN, 1.2);
+    const mid = mix(P.S0, P.L1, .5);
+    let sil = '';
+    const bodyPt = u => u < .6 ? mix(P.S0, P.L1, u / .6) : mix(P.L1, P.H, (u - .6) / .4);
+    const bodyR = [[0, 8.4], [.1, 9.8], [.25, 10.5], [.42, 9.6], [.55, 8.2], [.6, 7.6], [.72, 8.2], [.86, 9.6], [1, 10.4]];
+    for (let i = 0; i < bodyR.length - 1; i++) sil += capsule(bodyPt(bodyR[i][0]), bodyPt(bodyR[i + 1][0]), bodyR[i][1], bodyR[i + 1][1]);
+    sil += disc(add(hc, a, -2.6), 7.7) + disc(add(hc, a, 2.6), 7.7) + disc(hp(-1.4, 8.7), 1.4) + disc(hp(6.8, 6.4), 2.5) + capsule(add(P.S0, a, 1.5), hp(-3.2, -3.4), 4.7, 3.7);
+    sil += disc(add(P.S0, [-2, -.5], 1), 5.2);
+    sil += disc(add(P.H, tN, 2.6), 10.2) + disc(add(add(P.H, tN, 4.4), tU, -2.5), 7.4);
+    sil += disc(add(add(P.S0, unit(P.S0, P.L1), 11.5), tN, -6.4), 5.7) + disc(add(add(P.S0, unit(P.S0, P.L1), 14), tN, -5), 4.7);
+    sil += chain(P.H, P.K, [[0, 9.2], [.2, 8.9], [.45, 7.8], [.75, 6.1], [.92, 5.3], [1, 5.1]]) + disc(P.K, 5.3);
+    sil += chain(P.K, P.A, [[0, 5.1], [.2, 5.3], [.38, 5.1], [.7, 3.8], [.9, 3.2], [1, 3.1]]) + disc(add(mix(P.K, P.A, .27), sN, 1.5), 5.3);
+    sil += disc(add(mix(P.H, P.K, .22), sN, -1.6), 8.2);
+    sil += capsule(ar[0], ar[1], 3.7, 3.0) + capsule(ar[1], ar[2], 3.0, 2.3) + disc(ar[3], 2.4);
+    g.push(`<defs><linearGradient id="bodyG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#868b93"/><stop offset="1" stop-color="#4a4d53"/></linearGradient></defs><g opacity=".72"><path d="${sil}" fill="#e3e6ea" stroke="#e3e6ea" stroke-width="3" stroke-linejoin="round"/><path d="${sil}" fill="url(#bodyG)"/></g>`);
+
+    // волосы и лицо
+    const loc = (R, phi) => { const q = phi * Math.PI / 180; return add(add(hc, a, R * Math.cos(q)), f, R * Math.sin(q)); };
+    const arc = (R, from, to, st) => { const o = []; for (let q = from; st > 0 ? q <= to : q >= to; q += st) { const z = pt(loc(R, q)); o.push(f1(z[0]) + ' ' + f1(z[1])); } return o; };
+    g.push(dotp(loc(11.6, 245), 4, '#2c1b11'));
+    g.push(`<path d="M${arc(8.1, 140, 345, 12).concat(arc(5.9, 345, 160, -12)).join('L')}Z" fill="#2c1b11" opacity=".95"/>`);
+    const prof = [[6.6, 120], [7.8, 110], [9.7, 99], [8.6, 91], [8.2, 83], [8.2, 72], [8.8, 58], [9.6, 42]].map(v => pt(loc(v[0], v[1])));
+    g.push(`<polyline points="${prof.map(z => f1(z[0]) + ',' + f1(z[1])).join(' ')}" fill="none" stroke="#f1ede6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>`);
+    const ey = pt(loc(6.4, 100)), ey2 = pt(loc(6.4, 92));
+    g.push(`<line x1="${f1(ey[0])}" y1="${f1(ey[1])}" x2="${f1(ey2[0])}" y2="${f1(ey2[1])}" stroke="#f1ede6" stroke-width="1.5" stroke-linecap="round" opacity=".8"/>`);
+
+    // мышцы
+    if (lay.muscles) {
+      const mus = [], gc = add(add(P.H, Un, 4.3), U, 2.2), q = pt(gc), ga = ang(U);
+      mus.push(`<ellipse cx="${f1(q[0])}" cy="${f1(q[1])}" rx="${f1(10.5 * SC)}" ry="${f1(7.2 * SC)}" transform="rotate(${f1(-ga)} ${f1(q[0])} ${f1(q[1])})" fill="${heat(A.gmax)}" class="mu"/>`);
+      const tp = (a, b, r1, r2, v) => `<path d="${capsule(a, b, r1, r2)}" fill="${heat(v)}" class="mu"/>`;
+      mus.push(tp(add(P.H, Un, 5), add(P.K, Un, 3), 3.1, 2.1, A.ham));
+      mus.push(tp(add(P.H, Un, -4.2), add(P.K, Un, -3), 3, 2.2, A.quad));
+      mus.push(tp(add(P.K, sN, 2.4), add(P.A, sN, 1.3), 2.7, 1.6, A.calf));
+      mus.push(tp(add(P.K, sN, -2.6), add(P.A, sN, -1.5), 1.8, 1.2, A.tib));
+      mus.push(tp(add(P.L1, tN, 4.6), add(P.H, tN, 5.4), 2.7, 2.7, A.eras));
+      mus.push(tp(add(P.L1, tN, -4.6), add(P.H, tN, -5.4), 2.7, 2.7, A.abs));
+      g.push(mus.join(''));
+    }
+
+    // кости
+    if (lay.skeleton) {
+      const b = [], ivory = '#f6f2ea', op = .66;
+      const spine = (t) => { const c = t < .5 ? mix(P.S0, P.L1, t * 2) : mix(P.L1, P.H, (t - .5) * 2); const off = t < .5 ? 3.4 + 1.1 * Math.sin(t * 2 * Math.PI) : 3.2 - 1.7 * Math.sin((t - .5) * 2 * Math.PI) + (t > .85 ? 0.8 : 0); return add(c, tN, off); };
+            const nb = hp(-3.6, -2.6), s0 = spine(0);
+      for (let i = 0; i <= 6; i++) b.push(dotp(mix(s0, nb, i / 6), 3.2, ivory, null).replace('/>', ` opacity="${op}"/>`));
+      for (let i = 0; i <= 16; i++) { const t = i / 16, p = spine(t), lum = t > .55; b.push(dotp(p, lum ? 4.6 : 3.8, lum && hot ? '#ff3d2e' : ivory, null).replace('/>', ` opacity="${lum && hot ? .95 : op}"/>`)); }
+      for (let i = 1; i <= 6; i++) {      // рёбра
+        const c = mix(P.S0, P.L1, .08 + i * .13), sp = add(c, tN, 3.4), fr = add(add(c, tN, -6.6), tU, 2.2), cp = add(add(c, tN, -1), tU, 4), a = pt(sp), z = pt(fr), k = pt(cp);
+        b.push(`<path d="M${f1(a[0])} ${f1(a[1])}Q${f1(k[0])} ${f1(k[1])} ${f1(z[0])} ${f1(z[1])}" fill="none" stroke="${ivory}" stroke-width="1.5" opacity="${op - .1}"/>`);
+      }
+      const pc = pt(add(P.H, tN, 2.4));
+      b.push(`<ellipse cx="${f1(pc[0])}" cy="${f1(pc[1])}" rx="${f1(4.4 * SC)}" ry="${f1(7.2 * SC)}" transform="rotate(${f1(-ang(tU))} ${f1(pc[0])} ${f1(pc[1])})" fill="none" stroke="${ivory}" stroke-width="1.8" opacity="${op}"/>`);
+      b.push(line(P.H, P.K, 5.5, ivory, op), line(P.K, P.A, 4.5, ivory, op), line(add(P.K, sN, .9), add(P.A, sN, .6), 2, ivory, op - .15));
+      b.push(line(P.A, P.ball, 3, ivory, op), line(P.ball, P.toe, 2.5, ivory, op));
+      b.push(line(ar[0], ar[1], 3.4, ivory, op), line(ar[1], ar[2], 2.8, ivory, op));
+      g.push(b.join(''));
+    }
+
+    // обувь
+    const dirF = unit(P.heel, P.toe), upF = [-dirF[1], dirF[0]];
+    const fp = [add(P.heel, dirF, -1.2), add(P.A, dirF, -1.4), add(P.A, upF, 1.5), add(P.ball, upF, 3.6), add(P.toe, upF, 2), add(P.toe, dirF, .8), add(P.heel, upF, -.1)];
+    g.push(`<path d="M${fp.map(pt).map(q => f1(q[0]) + ' ' + f1(q[1])).join('L')}Z" fill="#efe9e0" fill-opacity=".9" stroke="#bdb5aa" stroke-width="1"/>`);
+    const so = [add(P.heel, dirF, -1.2), add(P.toe, dirF, .8)].map(pt);
+    g.push(`<line x1="${f1(so[0][0])}" y1="${f1(so[0][1])}" x2="${f1(so[1][0])}" y2="${f1(so[1][1])}" stroke="#ff7a1a" stroke-width="4" stroke-linecap="round"/>`);
+
+    }
+    // поясница
+    const lp = [P.L1, P.H].map(pt);
+    g.push(`<line x1="${f1(lp[0][0])}" y1="${f1(lp[0][1])}" x2="${f1(lp[1][0])}" y2="${f1(lp[1][1])}" stroke="${hot ? '#ff3d2e' : '#ffb23f'}" stroke-width="${hot ? 7 : 3}" stroke-linecap="round" opacity="${hot ? .55 : .35}"/>`);
+    if (hot) { const m = pt(add(P.L1, tN, 15)); g.push(`<text class="tr" x="${f1(m[0])}" y="${f1(Math.min(m[1] + 8, 392))}" text-anchor="middle">поясница включилась</text>`); }
+
+    // штанга
+    if (st.load > 0) {
+      const c = add(P.H, tN, -10.5), q = pt(c);
+      g.push(`<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="${f1(11 * SC)}" fill="#1a1715" fill-opacity=".92" stroke="#ff7a1a" stroke-width="3"/><circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="${f1(2 * SC)}" fill="#46403a"/><text class="tj" x="${f1(q[0])}" y="${f1(q[1] - 14)}" text-anchor="middle" style="font-weight:700">${st.load} кг</text>`);
+    }
+
+    // силы
+    if (lay.forces) {
+      const L = r.Ld, c = pt([P.cop, 0]), h = pt(P.H), arm = Math.abs(P.cop - P.H[0]);
+      g.push(`<line x1="${f1(c[0])}" y1="${f1(c[1])}" x2="${f1(c[0])}" y2="${f1(h[1])}" stroke="#ff7a1a" stroke-width="2" stroke-dasharray="6 5"/>`);
+      g.push(`<line x1="${f1(h[0])}" y1="${f1(h[1])}" x2="${f1(c[0])}" y2="${f1(h[1])}" stroke="#ffb23f" stroke-width="2.5"/>`);
+      g.push(`<text class="tg2" x="${f1((h[0] + c[0]) / 2)}" y="${f1(h[1] - 6)}" text-anchor="middle">плечо ${Math.round(arm)} см</text>`);
+      const ah = Math.max(14, Math.min(60, L.bwPct * 1.1)), top = c[1] - ah;
+      g.push(`<line x1="${f1(c[0])}" y1="${f1(c[1])}" x2="${f1(c[0])}" y2="${f1(top)}" stroke="#ff7a1a" stroke-width="4"/><path d="M${f1(c[0] - 6)} ${f1(top + 9)}L${f1(c[0])} ${f1(top - 2)}L${f1(c[0] + 6)} ${f1(top + 9)}Z" fill="#ff7a1a"/>`);
+    }
+
+    // суставы
+    if (lay.anat) {
+      [['Тазобедренный сустав', P.H, 0, 66], ['Коленный сустав', P.K, 0, -44], ['Голеностопный сустав', P.A, 70, -64]].forEach(jn => {
+        const q = pt(jn[1]), w = jn[0].length * 6.3 + 18, cx = q[0] + jn[2], cy = Math.min(q[1] + jn[3], 358);
+        g.push(`<line x1="${f1(q[0])}" y1="${f1(q[1])}" x2="${f1(cx)}" y2="${f1(cy)}" stroke="#8d857b" stroke-width="1.3"/><rect x="${f1(cx - w / 2)}" y="${f1(cy - 10)}" width="${f1(w)}" height="20" rx="6" fill="#0c0b0a" fill-opacity=".88" stroke="#8d857b"/><text class="tj" x="${f1(cx)}" y="${f1(cy + 4)}" text-anchor="middle">${jn[0]}</text>`);
+        g.push(`<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="6.5" fill="#fff" stroke="#0c0b0a" stroke-width="1.5"/><circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="2.8" fill="#0c0b0a"/>`);
+      });
+    } else
+    [['ТБС', P.H, -14], ['колено', P.K, -14], ['', P.A, 0]].forEach(j => {
+      const q = pt(j[1]); g.push(`<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="5" fill="#161412" stroke="#ff7a1a" stroke-width="2.5"/>`);
+      if (j[0]) g.push(`<text class="tj" x="${f1(q[0])}" y="${f1(q[1] + j[2])}" text-anchor="middle">${j[0]}</text>`);
+    });
+    return g.join('');
+  }
+  window.GBFig.figure = figure;
+})();
+</script>
+<script>/* Анатомический вид: контуры мышц, сухожилия, манекен (голова, кисти, стопы). Оригинальная отрисовка. */
+(function () {
+  'use strict';
+  const SC = 5.5, X0 = 40, Y0 = 372;
+  const sx = x => (x + X0) * SC, sy = y => Y0 - y * SC;
+  const pt = p => [sx(p[0]), sy(p[1])];
+  const f1 = v => v.toFixed(1);
+  const add = (p, v, k) => [p[0] + v[0] * k, p[1] + v[1] * k];
+  const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+  const unit = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1; return [dx / L, dy / L]; };
+  const downN = u => [u[1], -u[0]];
+
+  function capsule(p1, p2, r1, r2) {
+    const a = pt(p1), b = pt(p2), dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1;
+    const nx = -dy / L, ny = dx / L, R1 = r1 * SC, R2 = r2 * SC;
+    return `M${f1(a[0] + nx * R1)} ${f1(a[1] + ny * R1)}L${f1(b[0] + nx * R2)} ${f1(b[1] + ny * R2)}A${f1(R2)} ${f1(R2)} 0 0 0 ${f1(b[0] - nx * R2)} ${f1(b[1] - ny * R2)}L${f1(a[0] - nx * R1)} ${f1(a[1] - ny * R1)}A${f1(R1)} ${f1(R1)} 0 0 0 ${f1(a[0] + nx * R1)} ${f1(a[1] + ny * R1)}Z`;
+  }
+  function disc(p, r) { const q = pt(p), R = r * SC; return `M${f1(q[0] - R)} ${f1(q[1])}a${f1(R)} ${f1(R)} 0 1 0 ${f1(2 * R)} 0a${f1(R)} ${f1(R)} 0 1 0 ${f1(-2 * R)} 0Z`; }
+  function chain(p1, p2, stops) { let d = ''; for (let i = 0; i < stops.length - 1; i++) d += capsule(mix(p1, p2, stops[i][0]), mix(p1, p2, stops[i + 1][0]), stops[i][1], stops[i + 1][1]); return d; }
+
+  const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  function closed(P) { const n = P.length; let d = 'M' + mid(P[n - 1], P[0]).map(f1).join(' '); for (let i = 0; i < n; i++) d += 'Q' + P[i].map(f1).join(' ') + ' ' + mid(P[i], P[(i + 1) % n]).map(f1).join(' '); return d + 'Z'; }
+  function opened(P) { let d = 'M' + P[0].map(f1).join(' '); for (let i = 1; i < P.length - 1; i++) d += 'Q' + P[i].map(f1).join(' ') + ' ' + mid(P[i], P[i + 1]).map(f1).join(' '); return d + 'L' + P[P.length - 1].map(f1).join(' '); }
+
+  // цвет мышцы: серо-синий в покое → янтарный → оранжевый → красный при максимальной работе
+  function heat(v) {
+    const t = Math.max(0, Math.min(1, v / 100)), S = [[0, [84, 92, 104]], [.35, [222, 168, 52]], [.7, [255, 112, 26]], [1, [255, 48, 40]]];
+    let i = 0; while (i < S.length - 2 && t > S[i + 1][0]) i++;
+    const k = Math.max(0, Math.min(1, (t - S[i][0]) / (S[i + 1][0] - S[i][0]))), c1 = S[i][1], c2 = S[i + 1][1];
+    return `rgb(${[0, 1, 2].map(j => Math.round(c1[j] + (c2[j] - c1[j]) * k)).join(',')})`;
+  }
+  // мышца по ряду станций [a, край1, край2] в системе координат fr(a, b) → см
+  function muscle(fr, st, v, fiberN) {
+    const MB = 1.14, top = st.map(s => pt(fr(s[0], s[1] * MB))), bot = st.map(s => pt(fr(s[0], s[2] * MB))).reverse();
+    let o = `<path d="${closed(top.concat(bot))}" fill="${heat(v)}" stroke="#f3eee8" stroke-width="1.3" stroke-opacity=".8" stroke-linejoin="round"/>`;
+    for (let j = 1; j <= (fiberN == null ? 2 : fiberN); j++) {
+      const q = j / ((fiberN == null ? 2 : fiberN) + 1);
+      o += `<path d="${opened(st.map(s => pt(fr(s[0], (s[1] + (s[2] - s[1]) * q) * MB))))}" fill="none" stroke="#000" stroke-opacity=".2" stroke-width="1"/>`;
+    }
+    return o;
+  }
+  function poly(fr, pts, v) { return `<path d="${closed(pts.map(p => pt(fr(p[0], p[1] * 1.1))))}" fill="${heat(v)}" stroke="#f3eee8" stroke-width="1.3" stroke-opacity=".8" stroke-linejoin="round"/>`; }
+  const tendon = (fr, pts) => `<path d="${opened(pts.map(p => pt(fr(p[0], p[1]))))}" fill="none" stroke="#f3eee8" stroke-width="2.2" stroke-linecap="round" opacity=".9"/>`;
+
+  function arms(st, Sy, P) {
+    if (st.arms === 'chest') return [[0, Sy], [8, Sy - 4.5], [2.5, Sy + 6.5], [1, Sy + 8.5]];
+    if (st.arms === 'overhead') return [[0, Sy], [3.5, Sy + 11], [3.5, Sy + 22], [3.5, Sy + 26]];
+    const s0 = [P.S0[0] - .5, Sy - 1.5], e = [s0[0] + 6.8, s0[1] - 26.2], w = [e[0] + 20.4, Math.max(3.8, e[1] - 12.7)];   // рука свисает вдоль скамьи, локоть согнут
+    return [s0, e, w, [w[0] + 6.8, Math.max(2.6, w[1] - 4.2)]];
+  }
+
+  function body3(r, st) {
+    const P = r.P, A = r.A, Sy = P.S0[1], o = [];
+    const U = unit(P.H, P.K), Un = downN(U), sU = unit(P.K, P.A), sN = downN(sU);
+    const tU1 = unit(P.S0, P.L1), tU2 = unit(P.L1, P.H), tN1 = downN(tU1), tN2 = downN(tU2);
+    const aR = unit(P.L1, P.S0), aT = unit([0, 0], [aR[0] * .62 - .38, aR[1] * .62]), dr = 6 * Math.PI / 180;
+    const a = [aT[0] * Math.cos(dr) - aT[1] * Math.sin(dr), aT[0] * Math.sin(dr) + aT[1] * Math.cos(dr)], f = [a[1], -a[0]];
+    const hc = add(P.S0, a, 21.5), ar = arms(st, Sy, P);
+    const T = (x, b) => add(add(P.H, U, x), Un, b);               // бедро: x вдоль, b к задней поверхности
+    const S = (x, b) => add(add(P.K, sU, x), sN, b);              // голень
+    const Q = (t, b) => t < .6 ? add(mix(P.S0, P.L1, t / .6), tN1, b) : add(mix(P.L1, P.H, (t - .6) / .4), tN2, b);   // корпус
+    const armFr = (p0, p1) => (t, b) => { const u = unit(p0, p1), n = downN(u), L = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]); return add(add(p0, u, t * L), n, b); };
+
+    // подложка: тело целиком, серый манекен
+    let sil = '';
+    const bodyR = [[0, 8.4], [.1, 9.8], [.25, 10.5], [.42, 9.6], [.55, 8.2], [.6, 7.6], [.72, 8.2], [.86, 9.6], [1, 10.4]];
+    const bp = u => u < .6 ? mix(P.S0, P.L1, u / .6) : mix(P.L1, P.H, (u - .6) / .4);
+    for (let i = 0; i < bodyR.length - 1; i++) sil += capsule(bp(bodyR[i][0]), bp(bodyR[i + 1][0]), bodyR[i][1], bodyR[i + 1][1]);
+    sil += disc(add(P.S0, [-2, -.5], 1), 5.2) + disc(add(P.H, tN2, 2.6), 10.2) + disc(add(add(P.H, tN2, 4.4), tU2, -2.5), 7.4);
+    sil += chain(P.H, P.K, [[0, 9.2], [.2, 8.9], [.45, 7.8], [.75, 6.1], [.92, 5.3], [1, 5.1]]) + disc(P.K, 5.3);
+    sil += chain(P.K, P.A, [[0, 5.1], [.2, 5.3], [.38, 5.1], [.7, 3.8], [.9, 3.2], [1, 3.1]]) + disc(add(mix(P.K, P.A, .27), sN, 1.5), 5.3);
+    o.push(`<defs><filter id="gooA" filterUnits="userSpaceOnUse" x="0" y="0" width="880" height="400" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.5"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 26 -9"/></filter><filter id="gooB" filterUnits="userSpaceOnUse" x="0" y="0" width="880" height="400" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.5"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 26 -16"/></filter></defs>`);
+    o.push(`<g filter="url(#gooA)"><path d="${sil}" fill="#9aa0a8"/></g><g filter="url(#gooB)"><path d="${sil}" fill="#25282c"/></g>`);
+
+    // голова-манекен и шея: естественный профиль, лицо смотрит вверх, подбородок ближе к груди
+    const hp = (ka, kf) => add(add(hc, a, ka), f, kf);
+    const grey = 'url(#mannG)';
+    o.push(`<defs><linearGradient id="mannG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef0f2"/><stop offset="1" stop-color="#b0b4ba"/></linearGradient></defs>`);
+    const outline = [[-9.8, 5], [-8.6, 6.9], [-7.2, 7.6], [-5.6, 8], [-3.7, 10.6], [-3.7, 10.6], [-1.8, 9], [.4, 8.5], [3.6, 8.3], [7.2, 6.8], [10.2, 3.4], [11.2, -.8], [9.4, -5.6], [5.4, -8], [1, -7.4], [-3, -5.2], [-6.8, -2], [-8.6, 1.2]].map(v => pt(hp(v[0], v[1])));
+    const ar2 = outline.reduce((t, q, i) => { const w = outline[(i + 1) % outline.length]; return t + q[0] * w[1] - w[0] * q[1]; }, 0);
+    const hdPath = closed(ar2 > 0 ? outline.slice().reverse() : outline);
+    const nb = add(P.S0, a, -1.2), nt = hp(-3.4, -3.4);
+    const hd0 = chain(nb, nt, [[0, 5.9], [.3, 4.7], [.7, 4.1], [1, 3.9]]) + hdPath;
+    o.push(`<g filter="url(#gooA)"><path d="${hd0}" fill="#8f9399"/></g><g filter="url(#gooB)"><path d="${hd0}" fill="url(#mannG)"/></g>`);
+    o.push(`<path d="${capsule(hp(-.2, -1.2), hp(-.2, -3.3), .7, .9)}" fill="#d4d7db" stroke="#8f9399" stroke-width="1"/>`);
+
+    // мышцы туловища
+    o.push(poly((x, b) => add(add(P.S0, tU1, x), tN1, b), [[-5, -2], [-2, -7], [3, -7.4], [7, -4], [7.5, .8], [3, 3.6], [-3, 2.4]], 10));              // дельта
+    o.push(muscle(Q, [[.08, -2.4, -9.4], [.2, -3.4, -10.4], [.34, -3, -8.8], [.46, -2.2, -6.8]], 8, 2));                                          // грудь
+    o.push(muscle(Q, [[.14, 8.6, 4.2], [.3, 9.2, 4.6], [.5, 7.8, 3.6], [.7, 7.4, 3.4], [.85, 8.4, 4.2], [1, 9.4, 5]], A.eras, 3));                // разгибатели спины
+    o.push(muscle(Q, [[.5, -5, -8.2], [.65, -5, -7.6], [.8, -5.6, -8.4], [.95, -6.4, -9.2]], A.abs, 0));                                           // пресс
+    [.57, .67, .77, .87].forEach(t => { const p = pt(Q(t, -5.2)), q = pt(Q(t, -8.4)); o.push(`<line x1="${f1(p[0])}" y1="${f1(p[1])}" x2="${f1(q[0])}" y2="${f1(q[1])}" stroke="#f3eee8" stroke-width="1.2" opacity=".75"/>`); });
+
+    // ягодицы и бедро
+    o.push(poly(T, [[-11, 2], [-9, 7], [-4, 9.8], [2, 9.8], [6, 7], [4, 3.5], [-2, 1.8], [-7, 1.2]], A.gmed));                                    // средняя ягодичная
+    o.push(poly(T, [[-9, 4], [-8, 9], [-3, 12.2], [3, 12.8], [8, 10.6], [13, 7], [16, 4.2], [15, 1.8], [10, .8], [5, 1.2], [0, .5], [-5, .8]], A.gmax)); // большая ягодичная
+    o.push(muscle(T, [[3, 8.2, 2.8], [11, 8.0, 2.6], [22, 6.4, 1.8], [32, 4.8, 1.4], [38, 3.8, 1.6]], A.ham, 3));                                  // бицепс бедра
+    o.push(muscle(T, [[5, -1.4, -7.4], [12, -1.6, -8.2], [22, -1.6, -7], [32, -1.4, -5.4], [38, -1.2, -4.5]], A.quad, 3));                          // квадрицепс
+    o.push(tendon(T, [[38, 2.6], [40.5, 2.4]]));
+    const pk = pt(T(39.8, -4.4)); o.push(`<ellipse cx="${f1(pk[0])}" cy="${f1(pk[1])}" rx="${f1(2.4 * SC)}" ry="${f1(2.8 * SC)}" transform="rotate(${f1(-Math.atan2(-U[1], U[0]) * 180 / Math.PI)} ${f1(pk[0])} ${f1(pk[1])})" fill="#f3eee8" fill-opacity=".85"/>`);
+    o.push(tendon(S, [[0, -4.4], [4, -3.4]]));
+
+    // голень
+    o.push(muscle(S, [[9, 4.0, 1.5], [16, 4.3, 1.4], [24, 3.4, 1.2]], A.calf * .8, 1));                                                            // камбаловидная
+    o.push(muscle(S, [[0, 4.6, 1.0], [6, 6.0, 1.6], [12, 5.4, 1.4], [19, 3.9, 1.0], [25, 2.8, .8]], A.calf, 2));                                  // икроножная
+    o.push(tendon(S, [[25, 1.8], [31, 2.0], [37.5, 2.2]]));
+    o.push(muscle(S, [[5, -1.6, -4.6], [12, -1.4, -4.4], [22, -1, -3.2], [31, -.8, -2]], A.tib, 1));                                               // передняя большеберцовая
+    o.push(tendon(S, [[31, -1.4], [36, -1.2]]));
+
+    // босая стопа
+    const dirF = unit(P.heel, P.toe), upF = [-dirF[1], dirF[0]];
+    const fp = [add(P.heel, dirF, -1.2), add(P.A, dirF, -1.4), add(P.A, upF, 1.5), add(P.ball, upF, 3.2), add(P.toe, upF, 1.4), add(P.toe, dirF, .8), add(P.toe, upF, -.2), add(P.heel, upF, -.2)];
+    o.push(`<path d="${closed(fp.map(pt))}" fill="${grey}" stroke="#8f9399" stroke-width="1.2" stroke-linejoin="round"/>`);
+    // рука: свисает вдоль скамьи, не закрывая ягодицы и бедро
+    const armD = capsule(ar[0], ar[1], 3.7, 3.1) + capsule(ar[1], ar[2], 3.1, 2.4);
+    o.push(`<g><path d="${armD}" fill="#9aa0a8" stroke="#9aa0a8" stroke-width="3" stroke-linejoin="round"/><path d="${armD}" fill="#2d3035"/>`
+      + muscle(armFr(ar[0], ar[1]), [[.08, -.9, -3.3], [.4, -1, -3.6], [.88, -.7, -2.4]], 10, 1)
+      + muscle(armFr(ar[1], ar[2]), [[.08, -.5, -2.7], [.4, -.6, -2.9], [.9, -.3, -1.7]], 10, 1)
+      + `<path d="${capsule(ar[2], ar[3], 2.3, 2)}" fill="url(#mannG)" stroke="#8f9399" stroke-width="1.1"/></g>`);
+    return o.join('');
+  }
+  window.GBFig.body3 = body3;
+})();
+</script>
+<script>(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const DEF = GB.DEFAULTS;
+  let st = Object.assign({}, DEF);
+  const lay = { anat: true, muscles: true, skeleton: true, forces: true, ghost: false };
+  let raf = 0, anim = null;
+
+  const SUP = [['flat', 'Вся стопа'], ['heel', 'Носки вверх'], ['toe', 'На носках']];
+  const ARM = [['along', 'Вдоль тела'], ['chest', 'На груди'], ['overhead', 'Вверх']];
+  const PRE = [
+    ['Правильно', {}, 100], ['Прогнуть поясницу', {}, 120], ['Стопы далеко', { d: 47 }, 100], ['Стопы близко', { d: 24 }, 100],
+    ['Колени внутрь', { k: -0.8 }, 100], ['Носки вверх', { support: 'heel' }, 100], ['На носках', { support: 'toe' }, 100],
+    ['Руки вверх', { arms: 'overhead' }, 112], ['С весом 40 кг', { load: 40 }, 100]
+  ];
+
+  function seg(id, list, key) {
+    const el = $(id);
+    el.innerHTML = list.map(o => `<button type="button" role="radio" data-v="${o[0]}" aria-checked="false">${o[1]}</button>`).join('');
+    el.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; stopAnim(); st[key] = b.dataset.v; sync(); });
+  }
+  seg('segSup', SUP, 'support'); seg('segArm', ARM, 'arms');
+
+  $('presets').innerHTML = PRE.map((p, i) => `<button class="chip" type="button" data-i="${i}">${p[0]}</button>`).join('');
+  $('presets').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const p = PRE[+b.dataset.i]; stopAnim();
+    st = Object.assign({}, DEF, p[1], { s: st.s }); sync(); tween(p[2]);
+  });
+
+  const sliders = { s: v => Math.round(v), bench: v => v + ' см', d: v => v + ' см', w: v => v + ' см', phi: v => v + '°', k: v => v < -0.35 ? 'внутрь' : v > 0.75 ? 'слишком наружу' : v > 0.3 ? 'чуть наружу' : 'ровно', load: v => v ? v + ' кг' : 'без веса' };
+  Object.keys(sliders).forEach(k => $(k).addEventListener('input', e => { stopAnim(); st[k] = +e.target.value; render(); }));
+
+  function sync() {
+    Object.keys(sliders).forEach(k => { $(k).value = st[k]; });
+    document.querySelectorAll('#segSup button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.v === st.support)));
+    document.querySelectorAll('#segArm button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.v === st.arms)));
+    render();
+  }
+
+  function stopAnim() { anim = null; $('playBtn').textContent = 'Показать повтор'; }
+  function tween(to, ms, done) {
+    const from = st.s, t0 = performance.now(), my = anim = {};
+    ms = ms || 700;
+    (function step(t) {
+      if (anim !== my) return;
+      const u = Math.min(1, (t - t0) / ms), e = u * u * (3 - 2 * u);
+      st.s = from + (to - from) * e; $('s').value = st.s; render();
+      if (u < 1) requestAnimationFrame(step); else { anim = null; if (done) done(); }
+    })(t0);
+  }
+  $('playBtn').addEventListener('click', () => {
+    if (anim) { stopAnim(); return; }
