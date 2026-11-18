@@ -998,3 +998,81 @@ svg text{font-family:var(--body)}
   }
   $('playBtn').addEventListener('click', () => {
     if (anim) { stopAnim(); return; }
+    $('playBtn').textContent = 'Остановить';
+    st.s = 0; $('s').value = 0; render();
+    const my = {};
+    const up = () => tween(100, 1800, () => setTimeout(() => tween(0, 1800, () => { $('playBtn').textContent = 'Показать повтор'; }), 700));
+    up();
+  });
+
+  function bindLayer(id, key) {
+    $(id).addEventListener('click', () => { lay[key] = !lay[key]; $(id).setAttribute('aria-pressed', String(lay[key])); $(id).classList.toggle('on', lay[key]); render(); });
+    $(id).classList.toggle('on', lay[key]);
+  }
+  bindLayer('gh', 'ghost'); bindLayer('lyA', 'anat'); bindLayer('lyF', 'forces');
+  $('resetBtn').addEventListener('click', () => { stopAnim(); st = Object.assign({}, DEF); sync(); });
+
+  const sheet = $('sheet');
+  $('howBtn').addEventListener('click', () => { sheet.hidden = false; $('closeSheet').focus(); });
+  $('closeSheet').addEventListener('click', () => { sheet.hidden = true; });
+  sheet.addEventListener('click', e => { if (e.target === sheet) sheet.hidden = true; });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') sheet.hidden = true; });
+  $('showRight').addEventListener('click', () => { sheet.hidden = true; stopAnim(); st = Object.assign({}, DEF, { s: 0 }); sync(); tween(100, 1400); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  const BARS = [
+    ['gmax', 'Ягодичная большая'], ['ham', 'Бицепс бедра'], ['gmed', 'Средняя ягодичная'], ['add', 'Приводящие'],
+    ['quad', 'Квадрицепс'], ['eras', 'Разгибатели спины (поясница)'], ['abs', 'Пресс'], ['shin', 'Голень']
+  ];
+  const word = v => v < 12 ? 'почти нет' : v < 35 ? 'слабо' : v < 60 ? 'средне' : v < 82 ? 'сильно' : 'очень сильно';
+  const col = v => `hsl(${Math.round(42 - 40 * Math.min(1, v / 100))} 100% ${Math.round(60 - 8 * v / 100)}%)`;
+
+  function render() { if (raf) return; raf = requestAnimationFrame(draw); }
+  function draw() {
+    raf = 0;
+    const r = GB.analyze(st), P = r.P, A = r.A, L = r.Ld;
+    $('fig').innerHTML = GBFig.figure(r, st, lay);
+    $('sOut').textContent = Math.round(st.s) + (st.s >= 100 ? ' · верх' : '');
+    const sf = st.s / 125; $('s').style.setProperty('--f', sf);
+    $('zone').style.setProperty('--on', GB.sOn(st) / GB.S_MAX);
+    Object.keys(sliders).forEach(k => { if (k !== 's') { $(k + 'Out').textContent = sliders[k](st[k]); } });
+    ['bench', 'd', 'w', 'phi', 'k', 'load'].forEach(k => { const el = $(k), f = (st[k] - el.min) / (el.max - el.min); el.style.setProperty('--f', f); });
+    $('pHip').textContent = Math.round(P.hip) + '°'; $('pHipB').style.width = Math.min(100, P.hip / 180 * 100) + '%';
+    $('pKnee').textContent = Math.round(P.kneeAng) + '°'; $('pKneeB').style.width = Math.min(100, P.kneeAng / 180 * 100) + '%';
+    const lumEl = $('pLum'); lumEl.textContent = Math.round(P.lam) + '°'; lumEl.style.color = P.lam > 6 ? '#ff8a7f' : ''; $('pLumB').style.width = Math.min(100, P.lam / 32 * 100) + '%';
+
+    const top = st.s >= 92, shk = Math.abs(P.shank);
+    const chk = [
+      ['Плечи–таз–колени на линии', top ? (Math.abs(P.above) < 2.2 && P.lam < 6) : null],
+      ['Голень вертикально', top ? shk <= 9 : null],
+      ['Поясница спокойна', P.lam <= 6],
+      ['Колени ровно', st.k >= -0.3 && st.k <= 0.6],
+      ['Пятки на полу', st.support !== 'toe']
+    ];
+    $('checks').innerHTML = chk.map(c => `<span class="ck ${c[1] === null ? 'na' : c[1] ? 'y' : 'n'}">${c[1] === null ? '·' : c[1] ? '✓' : '✕'} ${c[0]}</span>`).join('');
+    const topM = BARS.map(b => [b[1], A[b[0]]]).sort((a, b) => b[1] - a[1]).slice(0, 2);
+    $('lead2').textContent = 'Сильнее всего работают: ' + topM.map(m => m[0].toLowerCase() + ' ' + Math.round(m[1]) + '%').join(', ');
+    const iss = r.issues;
+    const none = !iss.length;
+    $('issues').innerHTML = (none ? [{ lvl: 'ok', title: 'Техника верная', why: 'Плечи, таз и колени на одной линии, голень почти вертикальна, ягодицы работают на максимум.', fix: '' }] : iss)
+      .map(i => `<div class="iss ${i.lvl}"><span class="t">${{ err: 'ошибка', warn: 'внимание', tip: 'совет', ok: 'верно' }[i.lvl]}</span><b>${i.title}</b><p>${i.why}</p>${i.fix ? `<p class="fix">Как исправить: ${i.fix}</p>` : ''}</div>`).join('');
+
+    $('bars').innerHTML = BARS.map(b => {
+      const v = Math.round(A[b[0]]);
+      return `<div class="bar"><div class="h"><span class="n">${b[1]}</span><span class="v">${v}% <small style="font:400 11px var(--body);color:var(--mut)">${word(v)}</small></span></div><div class="tr"><i style="width:${v}%;background:${b[0] === 'eras' && v > 45 ? 'var(--hot)' : col(v)}"></i></div></div>`;
+    }).join('');
+
+    $('mets').innerHTML = [
+      ['Момент в тазобедренном', Math.round(L.Mhip) + ' Н·м', 'на одну ногу', ''],
+      ['Плечо силы', Math.round(Math.abs(P.cop - P.H[0])) + ' см', 'от таза до опоры', ''],
+      ['Стопы держат', Math.round(L.bwPct) + '%', 'веса с отягощением', ''],
+      ['Прогиб поясницы', Math.round(P.lam) + '°', P.lam > 6 ? 'нагрузка на позвоночник' : 'поясница спокойна', P.lam > 6 ? 'hot' : '']
+    ].map(m => `<div class="met"><small>${m[0]}</small><b class="${m[3]}">${m[1]}</b><span>${m[2]}</span></div>`).join('');
+
+    $('chart').innerHTML = GBFig.chart(st, r);
+  }
+
+  sync();
+})();
+</script>
+
+</body></html>
